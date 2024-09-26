@@ -1,6 +1,15 @@
 # ejj_personmenu
 
-A personal menu resource for FiveM that provides players with access to their money data and society account details. This resource supports various phone scripts to display player phone numbers.
+**ejj_personmenu** is a FiveM resource that provides players with a personal menu to view their financial data, including cash, bank balance, black money, and society account details. This resource also supports various phone scripts to display the player's phone number.
+
+## Features
+- View cash, bank balance, black money, and society account information
+- Support for multiple phone scripts, including:
+  - `lb-phone`
+  - `qs-smartphone-pro`
+  - `qs-smartphone`
+  - `gksphone`
+- Customizable notification settings
 
 ## Installation
 
@@ -9,64 +18,54 @@ A personal menu resource for FiveM that provides players with access to their mo
 
    ```bash
    git clone https://github.com/EJJ04/ejj_personmenu
-   ```
+Add to server.cfg: Ensure the following resources are started by adding them to your server.cfg in this order:
 
-2. **Add to server.cfg**: Ensure the resource is started by adding it to your `server.cfg`:
-
-   ```
-   start ejj_personmenu
-   ```
-
-3. **Locale Files**: Update or add locale files for your desired languages in the `locales` directory (e.g., `en.json`, `da.json`).
-
-## Features
-
-- Access to player's cash, bank balance, and black money.
-- Society account details for bosses.
-- Customizable notification positions.
-- Support for various phone scripts, allowing display of player phone numbers, including:
-  - `lb-phone`
-  - `qs-smartphone-pro`
-  - `qs-smartphone`
-  - `gksphone`
-
-## Usage
-
-Once installed, players can access their personal menu to view their cash, bank balance, black money, and society account details. The menu is accessible via the radial menu.
+```
+start ox_lib
+start ejj_personmenu
+Locale Files: Update or add locale files for your desired languages in the locales directory (e.g., en.json, da.json).
+```
 
 ## Configuration
 
-You can customize the menu options and notification settings by editing the `Config.lua` file. 
+You can customize the menu options and notification settings by editing the Config table in the resource. The default configuration is set as follows:
 
-### Menu Options
+```
+Config = {}
 
-- **cash**: Title and icon for cash display.
-- **bank**: Title and icon for bank display, set as read-only.
-- **black_money**: Title and icon for black money display, set as read-only.
-- **societyAccount**: Title and icon for society account, accessible to bosses only.
+Config.MenuOptions = {
+    cash = {
+        title = 'Kontanter',
+        icon = 'fa-solid fa-money-bill',
+    },
+    bank = {
+        title = 'Bank',
+        icon = 'fa-solid fa-building',
+        readOnly = true,
+    },
+    black_money = {
+        title = 'Sort Penge',
+        icon = 'fa-solid fa-sack-dollar',
+        readOnly = true,
+    },
+    societyAccount = {
+        title = 'Firmakonto',
+        icon = 'fa-solid fa-briefcase',
+        bossOnly = true,
+    }
+}
 
-### Notification Settings
 
-You can set the position for notifications using the following options:
-- `top`
-- `top-right`
-- `top-left`
-- `bottom`
-- `bottom-right`
-- `bottom-left`
-- `center-right`
-- `center-left`
+Config.NotifySettings = {
+    position = 'top' -- 'top', 'top-right', 'top-left', 'bottom', 'bottom-right', 'bottom-left', 'center-right', or 'center-left'
+}
+```
 
-## Locale Support
+## Usage
+Once installed and configured, players can access their personal menu through a designated input key or context menu option. The menu will display their financial information based on the data fetched from the database.
 
-The resource includes support for multiple languages. You can find and edit locale files in the `locales` directory. The default locale files are:
-- `en.json` for English
-- `da.json` for Danish
+## Support
 
-## License
+If you encounter any issues or have suggestions for improvements, feel free to open an issue on the GitHub repository or join my Discord server - https://discord.gg/N869PRHGfd
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Feel free to submit issues or pull requests. Contributions are welcome!
+Feel free to copy this block directly! Let me know if you need anything else.
