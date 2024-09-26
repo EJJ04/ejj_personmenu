@@ -14,11 +14,7 @@ end
 
 lib.callback.register('ejj_personmenu:getMoneyData', function(source)
     local xPlayer = nil
-    local cash = 0
-    local bank = 0
-    local black_money = 0
-    local societyAccountMoney = 0
-    local societyJob = ""
+    local cash, bank, black_money, societyAccountMoney = 0, 0, 0, 0
     local playerName = ""
 
     if GetResourceState('es_extended') == 'started' then
@@ -27,34 +23,30 @@ lib.callback.register('ejj_personmenu:getMoneyData', function(source)
             cash = xPlayer.getAccount('money').money
             bank = xPlayer.getAccount('bank').money
             black_money = xPlayer.getAccount('black_money').money
-            societyJob = xPlayer.getJob().name
             local identifier = xPlayer.getIdentifier()
 
             local userData = MySQL.query.await('SELECT firstname, lastname FROM users WHERE identifier = @identifier', {
                 ['@identifier'] = identifier
             })
-            
+
             if userData and #userData > 0 then
                 playerName = userData[1].firstname .. ' ' .. userData[1].lastname
             end
+        else
+            print('xPlayer is nil for es_extended framework')
         end
     elseif GetResourceState('qb-core') == 'started' then
         xPlayer = Framework.Functions.GetPlayer(source)
         if xPlayer then
-            cash = xPlayer.PlayerData.money['cash']
-            bank = xPlayer.PlayerData.money['bank']
-            black_money = xPlayer.PlayerData.money['black_money'] or 0
-            societyJob = xPlayer.PlayerData.job.name
+            cash = xPlayer.Functions.GetMoney('cash')
+            bank = xPlayer.Functions.GetMoney('bank')
+            black_money = xPlayer.Functions.GetMoney('black_money') or 0
+            
+            societyAccountMoney = exports['qb-banking']:GetAccountBalance(xPlayer.PlayerData.job.name) or 0
+            
             playerName = xPlayer.PlayerData.charinfo.firstname .. ' ' .. xPlayer.PlayerData.charinfo.lastname
-        end
-    end
-
-    if societyJob ~= "" then
-        local societyAccountData = MySQL.query.await('SELECT money FROM addon_account_data WHERE account_name = @account_name', {
-            ['@account_name'] = 'society_' .. societyJob
-        })
-        if societyAccountData and #societyAccountData > 0 then
-            societyAccountMoney = societyAccountData[1].money
+        else
+            print('xPlayer is nil for qb-core framework')
         end
     end
 
@@ -62,7 +54,7 @@ lib.callback.register('ejj_personmenu:getMoneyData', function(source)
     if GetResourceState('lb-phone') == 'started' then
         phoneNumber = exports["lb-phone"]:GetEquippedPhoneNumber(source) or phoneNumber
     elseif GetResourceState('qs-smartphone-pro') == 'started' then
-        local identifier = Framework.GetPlayerFromId(source).identifier
+        local identifier = xPlayer.getIdentifier()
         phoneNumber = exports['qs-smartphone-pro']:GetPhoneNumberFromIdentifier(identifier, false) or phoneNumber
     elseif GetResourceState('qs-smartphone') == 'started' then
         phoneNumber = exports['qs-base']:GetPlayerPhone(source) or phoneNumber
