@@ -23,8 +23,11 @@ Add to server.cfg: Ensure the following resources are started by adding them to 
 ```
 start ox_lib
 start ejj_personmenu
-Locale Files: Update or add locale files for your desired languages in the locales directory (e.g., en.json, da.json).
 ```
+
+## Locale Files 
+
+Update or add locale files for your desired languages in the locales directory (e.g., en.json, da.json).
 
 ## Configuration
 
