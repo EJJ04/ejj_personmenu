@@ -1,6 +1,6 @@
 # ejj_personmenu
 
-A personal menu resource for FiveM that provides players with access to their money data and society account details.
+A personal menu resource for FiveM that provides players with access to their money data and society account details. This resource supports various phone scripts to display player phone numbers.
 
 ## Installation
 
@@ -24,6 +24,11 @@ A personal menu resource for FiveM that provides players with access to their mo
 - Access to player's cash, bank balance, and black money.
 - Society account details for bosses.
 - Customizable notification positions.
+- Support for various phone scripts, allowing display of player phone numbers, including:
+  - `lb-phone`
+  - `qs-smartphone-pro`
+  - `qs-smartphone`
+  - `gksphone`
 
 ## Usage
 
