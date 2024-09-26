@@ -1,0 +1,13 @@
+{
+    "personmenu_label": "Person Menu",
+    "cash_title": "Cash",
+    "bank_title": "Bank",
+    "black_money_title": "Black Money",
+    "society_account_title": "Society Account",
+    "error_title": "Error",
+    "error_description": "Could not retrieve data.",
+    "society_access": "You have access to the company account with $%s",
+    "framework_not_detected": "No framework detected (es_extended or qb-core). Please make sure one is running.",
+    "missing_phone_number": "Missing Phonenumber",
+    "currency_symbol": "$"
+}
