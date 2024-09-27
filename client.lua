@@ -1,14 +1,10 @@
 lib.locale()
 
-local ESX, QBCore = nil, nil
-
-if GetResourceState('es_extended') == 'started' then
+if Config.Framework == 'ESX' then
     ESX = exports['es_extended']:getSharedObject()
-elseif GetResourceState('qb-core') == 'started' then
+elseif Config.Framework == 'QBCore' then
     QBCore = exports['qb-core']:GetCoreObject()
-end
-
-if not (ESX or QBCore) then
+else
     print(locale('framework_not_detected'))
     return
 end
@@ -18,21 +14,33 @@ AddEventHandler("esx:setJob", function(job)
     ESX.PlayerData.job = job
 end)
 
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+    PlayerJob = JobInfo
+end)
+
+local function isBoss()
+    if Config.Framework == 'ESX' then
+        return ESX.PlayerData.job and ESX.PlayerData.job.grade_name == 'boss'
+    elseif Config.Framework == 'QBCore' then
+        local job = QBCore.Functions.GetPlayerData().job
+        return job and job.isboss
+    end
+end
+
 lib.addRadialItem({
     {
         id = 'ejj_personmenu1',
         label = locale('personmenu_label'),
         icon = 'circle-info',
         onSelect = function()
-
             local data = lib.callback.await('ejj_personmenu:getMoneyData', false)
             
             if data then
-
                 local options = {
                     {
                         title = locale('cash_title') .. ': ' .. locale('currency_symbol') .. data.cash,
                         icon = Config.MenuOptions.cash.icon,
+                        readOnly = Config.MenuOptions.cash.readOnly,
                     },
                     {
                         title = locale('bank_title') .. ': ' .. locale('currency_symbol') .. data.bank,
@@ -43,30 +51,31 @@ lib.addRadialItem({
                         title = locale('black_money_title') .. ': ' .. locale('currency_symbol') .. data.black_money,
                         icon = Config.MenuOptions.black_money.icon,
                         readOnly = Config.MenuOptions.black_money.readOnly,
+                    },
+                    {
+                        title = locale('job_title') .. ': ' .. (Config.Framework == 'ESX' and ESX.PlayerData.job.label or QBCore.Functions.GetPlayerData().job.label),
+                        description = locale('job_position') .. ': ' .. (Config.Framework == 'ESX' and ESX.PlayerData.job.grade_label or QBCore.Functions.GetPlayerData().job.grade.name),
+                        icon = Config.MenuOptions.job.icon,
+                        readOnly = Config.MenuOptions.job.readOnly,
                     }
                 }
 
-                print(ESX.PlayerData.job)
-                print(ESX.PlayerData.job.grade_name)
-
-                if ESX.PlayerData.job and ESX.PlayerData.job.grade_name == 'boss' then
+                if isBoss() then
                     table.insert(options, {
                         title = locale('society_account_title') .. ': ' .. locale('currency_symbol') .. data.societyAccountMoney,
+                        description = locale('society_account_description'), 
                         icon = Config.MenuOptions.societyAccount.icon,
                         onSelect = function()
-                            lib.notify({
-                                title = locale('society_account_title'),
-                                description = locale('society_access', data.societyAccountMoney),
-                                type = 'info',
-                                position = Config.NotifySettings.position
-                            })
+                            if Config.BossActions.onSelect then
+                                Config.BossActions.onSelect(data)
+                            end
                         end
                     })
                 end
 
                 lib.registerContext({
                     id = 'ejj_personmenu:context1',
-                    title = data.name,
+                    title = data.phoneNumber .. ' | ' .. data.name,
                     options = options
                 })
 
