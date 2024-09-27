@@ -4,10 +4,14 @@
     "bank_title": "Bank",
     "black_money_title": "Sort penge",
     "society_account_title": "Firmakonto",
+    "society_account_description": "Klik her for at åbne Boss Menuen.", 
     "error_title": "Fejl",
     "error_description": "Kunne ikke hente oplysninger.",
     "society_access": "Du har adgang til firmakontoen med $%s",
     "framework_not_detected": "Intet framework fundet (es_extended eller qb-core). Sørg for, at et er i gang.",
     "missing_phone_number": "Mangler Telefonnummer",
-    "currency_symbol": "$"
+    "currency_symbol": "$",
+    "job_title": "Dit Arbejde",
+    "job_position": "Din Stilling",
+    "name_not_recieved": "Ukendt Spiller"
 }
