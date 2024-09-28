@@ -4,14 +4,19 @@
     "bank_title": "Bank",
     "black_money_title": "Black Money",
     "society_account_title": "Society Account",
-    "society_account_description": "Click here to open the Boss Menu.", 
+    "society_account_description": "Click here to open the Boss Menu.",
     "error_title": "Error",
     "error_description": "Could not retrieve data.",
     "society_access": "You have access to the company account with $%s",
     "framework_not_detected": "No framework detected (es_extended or qb-core). Please make sure one is running.",
-    "missing_phone_number": "Missing Phone number",
+    "missing_phone_number": "Not Registered",
     "currency_symbol": "$",
-    "job_title": "Your Work",
+    "job_title": "Your Work:",
     "job_position": "Your Position",
-    "name_not_recieved": "Unknown Player"
+    "name_not_recieved": "Unknown Player",
+    "personal_info_title": "Personal Information:",
+    "economy_title": "Economy:",
+    "work_at": "Work at",
+    "overview_title": "Overview of",
+    "phone_number_label": "Phone Number: "
 }
