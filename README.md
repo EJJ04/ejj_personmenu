@@ -1,74 +1,97 @@
-# ejj_personmenu
+# Personal Menu Script
 
-**ejj_personmenu** is a FiveM resource that provides players with a personal menu to view their financial data, including cash, bank balance, black money, and society account details. This resource also supports various phone scripts to display the player's phone number.
+This script provides a personal menu for players in a FiveM server, supporting both ESX and QBCore frameworks. The menu displays personal information, financial data, and job details, allowing bosses to access society accounts.
 
 ## Features
-- View cash, bank balance, black money, and society account information
-- Support for multiple phone scripts, including:
-  - `lb-phone`
-  - `qs-smartphone-pro`
-  - `qs-smartphone`
-  - `gksphone`
-- Customizable notification settings
 
-## Installation
+- Framework support for ESX and QBCore.
+- Displays player's personal information, bank balance, cash, and job details.
+- Bosses can access society accounts.
+- Configurable notifications and menu options.
 
-1. **Download the Resource**:
-   Clone or download the repository to your `resources` directory.
+## Client-Side Overview
 
-   ```bash
-   git clone https://github.com/EJJ04/ejj_personmenu
-Add to server.cfg: Ensure the following resources are started by adding them to your server.cfg in this order:
+1. **Framework Detection**: The script detects whether to use ESX or QBCore.
+2. **Job Update Handling**: Listens for job updates and sets player job data accordingly.
+3. **Menu Registration**: Uses `lib.addRadialItem` to create a personal menu option, which retrieves and displays player data.
 
-```
-start ox_lib
-start ejj_personmenu
-```
+### Functions
 
-## Locale Files 
+- `isBoss()`: Checks if the player is a boss.
+- `formatNumber(amount)`: Formats numbers with thousands separators.
+- `formatCurrency(amount)`: Formats currency based on locale settings.
 
-Update or add locale files for your desired languages in the locales directory (e.g., en.json, da.json).
+### Usage
+
+- The personal menu can be accessed via the radial menu and displays:
+  - Personal Info (Name, Date of Birth, Phone Number)
+  - Economy Overview (Bank, Cash, Black Money)
+  - Job Details (Position, Grade)
+  - Society Account (if the player is a boss)
+
+## Server-Side Overview
+
+1. **Framework Detection**: Similar to the client-side, it detects the framework in use.
+2. **Data Retrieval**: The server listens for callbacks to provide player data, including cash, bank balance, job details, and phone number.
+3. **Database Queries**: Retrieves relevant data from the database, such as user information and society account balances.
+
+### Callbacks
+
+- `ejj_personmenu:getMoneyData`: Returns player data to the client when requested.
 
 ## Configuration
 
-You can customize the menu options and notification settings by editing the Config table in the resource. The default configuration is set as follows:
+The configuration file allows customization of the script's behavior.
 
-```
+```lua
 Config = {}
 
+Config.Framework = 'ESX' -- Choose between 'ESX' & 'QBCore'
+
+Config.BossActionMenu = 'ESX' -- Choose between 'ESX', 'QBCore', or 'Custom'
+
 Config.MenuOptions = {
-    cash = {
-        title = 'Kontanter',
-        icon = 'fa-solid fa-money-bill',
-    },
-    bank = {
-        title = 'Bank',
-        icon = 'fa-solid fa-building',
+    personal_info = { 
+        icon = 'user',  
         readOnly = true,
     },
-    black_money = {
-        title = 'Sort Penge',
-        icon = 'fa-solid fa-sack-dollar',
+    economy = {
+        icon = 'briefcase',  
         readOnly = true,
     },
     societyAccount = {
-        title = 'Firmakonto',
-        icon = 'fa-solid fa-briefcase',
-        bossOnly = true,
+        icon = 'briefcase', 
+    },
+    job = {
+        icon = 'user-tie', 
+        readOnly = true,
     }
 }
 
+Config.BossActions = {
+    onSelect = function(data)
+        if Config.BossActionMenu == 'ESX' then
+            TriggerEvent('esx_society:openBossMenu', data.job)
+        elseif Config.BossActionMenu == 'QBCore' then
+            TriggerEvent('qb-bossmenu:client:openMenu')
+        elseif Config.BossActionMenu == 'Custom' then
+            exports['lunar_multijob']:openBossMenu()
+        end
+    end
+}
 
 Config.NotifySettings = {
-    position = 'top' -- 'top', 'top-right', 'top-left', 'bottom', 'bottom-right', 'bottom-left', 'center-right', or 'center-left'
+    position = 'top' -- Notification position: 'top', 'top-right', 'top-left', 'bottom', 'bottom-right', 'bottom-left', 'center-right', 'center-left'
 }
 ```
 
-## Usage
-Once installed and configured, players can access their personal menu through a designated input key or context menu option. The menu will display their financial information based on the data fetched from the database.
+## Installation
+Download the script and place it in your server's resources folder.
+Ensure your server is set up for either ESX or QBCore.
+Add the necessary dependency references in your server.cfg.
 
-## Support
+## License
+This script is open-source and can be modified as per your server's requirements.
 
-If you encounter any issues or have suggestions for improvements, feel free to open an issue on the GitHub repository or join my Discord server - https://discord.gg/N869PRHGfd
 
-Feel free to copy this block directly! Let me know if you need anything else.
+This `README.md` provides a comprehensive overview of your script, covering its features, client and server logic, configuration, and installation steps. Let me know if you need any changes or additional sections!
