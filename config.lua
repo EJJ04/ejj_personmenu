@@ -6,11 +6,11 @@ Config.BossActionMenu = 'ESX' -- Choose between 'ESX', 'QBCore' or 'Custom'
 
 Config.MenuOptions = {
     personal_info = { 
-        icon = 'user',  -- Option for personal info
+        icon = 'user',  
         readOnly = true,
     },
     economy = {
-        icon = 'briefcase',  -- Use a common icon for economy
+        icon = 'briefcase',  
         readOnly = true,
     },
     societyAccount = {

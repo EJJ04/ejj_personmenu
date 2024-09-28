@@ -58,8 +58,8 @@ lib.callback.register('ejj_personmenu:getMoneyData', function(source)
 
             if userData and #userData > 0 then
                 data.name = userData[1].firstname .. ' ' .. userData[1].lastname 
-                -- Replace / with - in the date of birth
-                data.dateofbirth = userData[1].dateofbirth:gsub('/', '-') -- Change slashes to dashes
+
+                data.dateofbirth = userData[1].dateofbirth:gsub('/', '-') 
             else
                 data.name = locale('name_not_recieved')
             end
@@ -80,8 +80,7 @@ lib.callback.register('ejj_personmenu:getMoneyData', function(source)
             data.name = xPlayer.PlayerData.charinfo.firstname .. ' ' .. xPlayer.PlayerData.charinfo.lastname 
             data.societyAccountMoney = exports['qb-banking']:GetAccountBalance(xPlayer.PlayerData.job.name) or 0
             
-            -- Assuming you have access to the birthday in QBCore
-            data.dateofbirth = xPlayer.PlayerData.charinfo.birthdate:gsub('/', '-') -- Change slashes to dashes
+            data.dateofbirth = xPlayer.PlayerData.charinfo.birthdate:gsub('/', '-') 
             data.job = xPlayer.PlayerData.job
         else
             print('xPlayer is nil for QBCore framework')

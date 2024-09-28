@@ -56,18 +56,16 @@ lib.addRadialItem({
             if data then
                 local phoneNumber = data.phoneNumber ~= '' and data.phoneNumber or locale('missing_phone_number')
 
-                -- Extract birthday from data
                 local birthday = ""
                 if Config.Framework == 'ESX' then
-                    birthday = data.dateofbirth -- Assuming birthday is retrieved from the database in server.lua
+                    birthday = data.dateofbirth 
                 elseif Config.Framework == 'QBCore' then
-                    birthday = QBCore.Functions.GetPlayerData().charinfo.birthdate -- Assuming this is the correct way to access birthday
+                    birthday = QBCore.Functions.GetPlayerData().charinfo.birthdate 
                 end
 
-                -- Format birthday by replacing / with -
                 local formattedBirthday = ""
                 if birthday and birthday ~= "" then
-                    formattedBirthday = birthday:gsub('/', '-') -- Replace / with -
+                    formattedBirthday = birthday:gsub('/', '-') 
                 end
 
                 print(data.dateofbirth)
