@@ -52,12 +52,14 @@ lib.callback.register('ejj_personmenu:getMoneyData', function(source)
                 data.societyAccountMoney = societyData[1].money or 0 
             end
 
-            local userData = MySQL.query.await('SELECT firstname, lastname FROM users WHERE identifier = @identifier', {
+            local userData = MySQL.query.await('SELECT firstname, lastname, dateofbirth FROM users WHERE identifier = @identifier', {
                 ['@identifier'] = xPlayer.identifier
             })
 
             if userData and #userData > 0 then
                 data.name = userData[1].firstname .. ' ' .. userData[1].lastname 
+                -- Replace / with - in the date of birth
+                data.dateofbirth = userData[1].dateofbirth:gsub('/', '-') -- Change slashes to dashes
             else
                 data.name = locale('name_not_recieved')
             end
@@ -78,6 +80,8 @@ lib.callback.register('ejj_personmenu:getMoneyData', function(source)
             data.name = xPlayer.PlayerData.charinfo.firstname .. ' ' .. xPlayer.PlayerData.charinfo.lastname 
             data.societyAccountMoney = exports['qb-banking']:GetAccountBalance(xPlayer.PlayerData.job.name) or 0
             
+            -- Assuming you have access to the birthday in QBCore
+            data.dateofbirth = xPlayer.PlayerData.charinfo.birthdate:gsub('/', '-') -- Change slashes to dashes
             data.job = xPlayer.PlayerData.job
         else
             print('xPlayer is nil for QBCore framework')

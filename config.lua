@@ -5,23 +5,19 @@ Config.Framework = 'ESX' -- Choose between ESX & QBCore
 Config.BossActionMenu = 'ESX' -- Choose between 'ESX', 'QBCore' or 'Custom'
 
 Config.MenuOptions = {
-    cash = { 
-        icon = 'fa-solid fa-money-bill',
+    personal_info = { 
+        icon = 'user',  -- Option for personal info
         readOnly = true,
     },
-    bank = {
-        icon = 'fa-solid fa-building',
-        readOnly = true,
-    },
-    black_money = {
-        icon = 'fa-solid fa-sack-dollar',
+    economy = {
+        icon = 'briefcase',  -- Use a common icon for economy
         readOnly = true,
     },
     societyAccount = {
-        icon = 'fa-solid fa-briefcase',
+        icon = 'briefcase', 
     },
     job = {
-        icon = 'fa-solid fa-user-tie', 
+        icon = 'user-tie', 
         readOnly = true,
     }
 }

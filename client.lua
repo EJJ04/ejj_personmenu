@@ -27,6 +27,24 @@ local function isBoss()
     end
 end
 
+local function formatNumber(amount)
+    local formatted = tostring(amount):reverse():gsub("(%d%d%d)", "%1."):reverse()
+    if formatted:sub(1, 1) == '.' then
+        formatted = formatted:sub(2)
+    end
+    return formatted
+end
+
+local function formatCurrency(amount)
+    local localeSetting = GetConvar('ox:locale', 'en')
+    
+    if localeSetting == 'da' then
+        return formatNumber(amount) .. ' ' .. locale('currency_symbol')
+    else
+        return locale('currency_symbol') .. formatNumber(amount)
+    end
+end
+
 lib.addRadialItem({
     {
         id = 'ejj_personmenu1',
@@ -34,36 +52,54 @@ lib.addRadialItem({
         icon = 'circle-info',
         onSelect = function()
             local data = lib.callback.await('ejj_personmenu:getMoneyData', false)
-            
+
             if data then
+                local phoneNumber = data.phoneNumber ~= '' and data.phoneNumber or locale('missing_phone_number')
+
+                -- Extract birthday from data
+                local birthday = ""
+                if Config.Framework == 'ESX' then
+                    birthday = data.dateofbirth -- Assuming birthday is retrieved from the database in server.lua
+                elseif Config.Framework == 'QBCore' then
+                    birthday = QBCore.Functions.GetPlayerData().charinfo.birthdate -- Assuming this is the correct way to access birthday
+                end
+
+                -- Format birthday by replacing / with -
+                local formattedBirthday = ""
+                if birthday and birthday ~= "" then
+                    formattedBirthday = birthday:gsub('/', '-') -- Replace / with -
+                end
+
+                print(data.dateofbirth)
+
                 local options = {
                     {
-                        title = locale('cash_title') .. ': ' .. locale('currency_symbol') .. data.cash,
-                        icon = Config.MenuOptions.cash.icon,
-                        readOnly = Config.MenuOptions.cash.readOnly,
+                        title = locale('personal_info_title'),
+                        icon = Config.MenuOptions.personal_info.icon, 
+                        description = data.name .. " (" .. formattedBirthday .. ")\n" .. locale('phone_number_label') .. phoneNumber,
+                        readOnly = true,
                     },
                     {
-                        title = locale('bank_title') .. ': ' .. locale('currency_symbol') .. data.bank,
-                        icon = Config.MenuOptions.bank.icon,
-                        readOnly = Config.MenuOptions.bank.readOnly,
+                        title = locale('economy_title'),
+                        icon = Config.MenuOptions.economy.icon, 
+                        description = locale('bank_title') .. ': ' .. formatCurrency(data.bank) .. '\n' ..
+                                      locale('cash_title') .. ': ' .. formatCurrency(data.cash) .. '\n' ..
+                                      locale('black_money_title') .. ': ' .. formatCurrency(data.black_money),
+                        readOnly = true,
                     },
                     {
-                        title = locale('black_money_title') .. ': ' .. locale('currency_symbol') .. data.black_money,
-                        icon = Config.MenuOptions.black_money.icon,
-                        readOnly = Config.MenuOptions.black_money.readOnly,
-                    },
-                    {
-                        title = locale('job_title') .. ': ' .. (Config.Framework == 'ESX' and ESX.PlayerData.job.label or QBCore.Functions.GetPlayerData().job.label),
-                        description = locale('job_position') .. ': ' .. (Config.Framework == 'ESX' and ESX.PlayerData.job.grade_label or QBCore.Functions.GetPlayerData().job.grade.name),
-                        icon = Config.MenuOptions.job.icon,
-                        readOnly = Config.MenuOptions.job.readOnly,
+                        title = locale('job_title'),
+                        icon = Config.MenuOptions.job.icon, 
+                        description = locale('work_at') .. ' ' .. (Config.Framework == 'ESX' and ESX.PlayerData.job.label or QBCore.Functions.GetPlayerData().job.label) .. '. \n' ..
+                                      '(' .. (Config.Framework == 'ESX' and ESX.PlayerData.job.grade_label or QBCore.Functions.GetPlayerData().job.grade.name) .. ')',
+                        readOnly = true,
                     }
-                }
+                }                
 
                 if isBoss() then
                     table.insert(options, {
-                        title = locale('society_account_title') .. ': ' .. locale('currency_symbol') .. data.societyAccountMoney,
-                        description = locale('society_account_description'), 
+                        title = locale('society_account_title') .. ': ' .. formatCurrency(data.societyAccountMoney),
+                        description = locale('society_account_description'),
                         icon = Config.MenuOptions.societyAccount.icon,
                         onSelect = function()
                             if Config.BossActions.onSelect then
@@ -75,7 +111,7 @@ lib.addRadialItem({
 
                 lib.registerContext({
                     id = 'ejj_personmenu:context1',
-                    title = data.phoneNumber .. ' | ' .. data.name,
+                    title = locale('overview_title') .. ' ' .. data.name, 
                     options = options
                 })
 
